@@ -8,6 +8,7 @@ const screenshotDir = path.join(process.cwd(), 'qum', exe_Time);
  * @see https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({
+  timeout: 30 * 60 * 1000,
   testDir: './tests',
   /* Run tests in files in parallel */
   fullyParallel: false,
@@ -18,37 +19,49 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: [['list'], ['allure-playwright'],['html'] ],
+  reporter: [['list'], ['allure-playwright'], ['html']],
 
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-  baseURL: process.env.BASE_URL || 'https://www.brandwatch.com/',
+    baseURL: process.env.BASE_URL || 'https://www.brandwatch.com/',
 
-    
+
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
   },
 
-  projects: [ 
-   //{ name: 'chromium', use: { ...devices['Desktop Chrome'] }},
+  projects: [
+    //{ name: 'chromium', use: { ...devices['Desktop Chrome'] }},
     {
       name: 'performance=true',
-      use: { screenshot: 'only-on-failure',trace: 'retain-on-failure',
-       // RUN_PERFORMANCE : 'true'
+      use: {
+        screenshot: 'only-on-failure', trace: 'retain-on-failure',
+        // RUN_PERFORMANCE : 'true'
       },
       metadata: { performance: 'true', screenshotDir },
     },
-    {
+    /*{
       name: 'a11y=true',
       use: {screenshot: 'only-on-failure',trace: 'retain-on-failure' },
       metadata: { a11y: 'true', screenshotDir },
-    },
+    },*/
     {
       name: 'browserMetrics=true',
-      use: {screenshot: 'only-on-failure',trace: 'retain-on-failure' },
+      use: { screenshot: 'only-on-failure', trace: 'retain-on-failure' },
       metadata: { browserMetrics: 'true', screenshotDir },
     },
- ],
+     
+    // {
+    //   name: 'i18n=true',
+    //   use: {screenshot: 'only-on-failure',trace: 'retain-on-failure' },
+    //   metadata: { i18n: 'true', screenshotDir },
+    // },
+    // {
+    //   name: 'sequential',
+    //   use: {screenshot: 'only-on-failure',trace: 'retain-on-failure' },
+    //   metadata: { browserMetrics: 'true', a11y: 'true', performance: 'true', screenshotDir },
+    // },
+  ],
   globalSetup: './utils/global-setup.js'
 });
 function getFormattedTimestamp() {

@@ -3,14 +3,22 @@ import path from 'path';
 
 const browserData = [];
 let lastNavigation = 0;
+let lastURL='';
 
 async function getBrowserMetrics(page, action, task, scenario, step) {
     
     console.log(`\n--- Browser Metrics---`);
-    const perfTimings = await page.evaluate((prevNavStart) => {
+    const currentURL=page.url();
+    console.log(`last URL=${lastURL}   currentURL=${currentURL}`);
+    const params = {
+        prevNavStart: lastNavigation,
+        lastURL,
+        currentURL
+      };
+    const perfTimings = await page.evaluate(({prevNavStart,lastURL,currentURL}) => {
         const perf = performance.getEntriesByType('navigation')[0];
         const presentNavigation = performance.timeOrigin;
-        if (prevNavStart === presentNavigation) { return { metrics: {}, presentNavigation }; }
+        if (currentURL === lastURL && prevNavStart === presentNavigation) { return { metrics: {}, presentNavigation }; }
 
         const metrics = {
             startTime: performance.timeOrigin,
@@ -30,8 +38,9 @@ async function getBrowserMetrics(page, action, task, scenario, step) {
             decodedBodySize: perf.decodedBodySize
         };
         return { metrics, presentNavigation };
-    }, lastNavigation);
+    }, params);
     lastNavigation = perfTimings.presentNavigation;
+    lastURL =currentURL;
     if (Object.keys(perfTimings.metrics).length > 0) {
         browserData.push({
             task,
@@ -54,7 +63,7 @@ export function writeBrowserMetricsToFile(fileName = 'browserMetrics', filePath)
         }
         console.log(browserData.length + ' total steps recorded for browserMetrics.');
         fs.writeFileSync(METRICS_FILE, JSON.stringify(browserData, null, 2), 'utf-8');
-        console.log(`✅ A11y metrics written to ${METRICS_FILE}`);
+        console.log(`✅ browser metrics written to ${METRICS_FILE}`);
     }
 }
 export { getBrowserMetrics };

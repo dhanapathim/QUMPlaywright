@@ -37,7 +37,8 @@ export async function qumValidation(description, isLastAction, page, fn) {
       throw Error(`Validation failed for Action ${description}.Error details are `, e);
     }
   });
-  if (isLastAction ) {
+  const runPerformance = info.project.metadata.performance?.toLowerCase() === 'true' || false;
+  if (isLastAction && runPerformance) {
     const endUserAction = Date.now();
     const userActionTime = endUserAction - startUserAction;
 

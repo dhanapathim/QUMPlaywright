@@ -2,7 +2,7 @@ import { test } from '@playwright/test';
 import { getPerformanceMetrics, writePerformanceMetricsToFile } from '../utils/performanceMetrics.js';
 import { checkAllyViolations, writeA11yMetricsToFile } from './a11yMetrics.js';
 import { getBrowserMetrics, writeBrowserMetricsToFile } from './browserPerformanceMetrics.js';
-
+import {checkI18N,writeI18NMetricsToFile} from './i18NMetrics2.js';
 
 export let userActionCount = 0;
 //const runA11y = process.env.RUN_A11Y?.toLowerCase() === 'true' || false;
@@ -44,8 +44,9 @@ export async function qumAction(description, page, fn) {
   const runA11y = info.project.metadata.a11y?.toLowerCase() === 'true' || false;
   const runPerformance = info.project.metadata.performance?.toLowerCase() === 'true' || false;
   const runBrowserMetrics = info.project.metadata.browserMetrics?.toLowerCase() === 'true' || false;
+  const runI18n = info.project.metadata.i18n?.toLowerCase() === 'true' || false;
 
-  console.log(`A11y=${runA11y}; perf=${runPerformance}; browserM=${runBrowserMetrics}`);
+  console.log(`A11y=${runA11y}; performance=${runPerformance}; browserMetrics=${runBrowserMetrics};i18n=${runI18n}`);
   if (runPerformance) {
     await getPerformanceMetrics(page, taskName, scenario, step, description, userStart, requestSent);
   }
@@ -58,6 +59,10 @@ export async function qumAction(description, page, fn) {
   if (runBrowserMetrics) {
     await getBrowserMetrics(page, description, taskName, scenario, step);
   }
+  if(runI18n)
+    {
+      await checkI18N(page,description,taskName,scenario,step);
+    }
   console.log(`--- END of Action ${description} ---\n`);
   //await page.waitForTimeout(6000);
 }
@@ -81,10 +86,13 @@ export function writeQUM(testInfo) {
   const runA11y = testInfo.project.metadata.a11y?.toLowerCase() === 'true' || false;
   const runPerformance = testInfo.project.metadata.performance?.toLowerCase() === 'true' || false;
   const runBrowserMetrics = testInfo.project.metadata.browserMetrics?.toLowerCase() === 'true' || false;
+  const runI18N = testInfo.project.metadata.i18n?.toLowerCase() === 'true' || false;
+  
   console.log(`In writeQUM a11y=${testInfo.project.metadata.a11y} ,
-     perf=${testInfo.project.metadata.performance}
-     browser=${testInfo.project.metadata.browserMetrics}`);
-  return runA11y || runPerformance || runBrowserMetrics;
+     performance Metrics=${testInfo.project.metadata.performance}
+     browser Metrics=${testInfo.project.metadata.browserMetrics}
+     i18n Metrics= ${testInfo.project.metadata.i18n}`);
+  return runA11y || runPerformance || runBrowserMetrics||runI18N;
 }
 
 export function writeQUMFiles(testInfo) {
@@ -95,6 +103,7 @@ export function writeQUMFiles(testInfo) {
       writePerformanceMetricsToFile(fileName, filePath);
       writeA11yMetricsToFile(fileName, filePath);
       writeBrowserMetricsToFile(fileName, filePath);
+      writeI18NMetricsToFile(fileName,filePath);
       console.log('✅ Metrics written successfully');
     } catch (err) {
       console.error('⚠️ Failed to write metrics:', err);
