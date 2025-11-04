@@ -10,12 +10,13 @@ export const stepMetrics = [];
  * Add a single step metric (does not write to disk yet)
  */
 function addStepMetric({ task, scenario, step, action, userActionTime, systemDelay,
-  totalTime, networkCalls, isValid }) {
+  totalTime, networkCalls, isValid,type }) {
   stepMetrics.push({
     task,
     scenario,
     step,
     action,
+    type,
     userActionTime,
     systemDelay,
     totalTime,
@@ -84,6 +85,7 @@ async function getPerformanceMetrics(page, taskName, scenario, step, description
     totalTime,
     networkCalls: perfEntries,
     isValid: true,
+    type:'user Action',
   });
 
 }

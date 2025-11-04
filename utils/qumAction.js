@@ -1,8 +1,10 @@
 import { test } from '@playwright/test';
+import path from 'path';
 import { getPerformanceMetrics, writePerformanceMetricsToFile } from '../utils/performanceMetrics.js';
 import { checkAllyViolations, writeA11yMetricsToFile } from './a11yMetrics.js';
 import { getBrowserMetrics, writeBrowserMetricsToFile } from './browserPerformanceMetrics.js';
-import {checkI18N,writeI18NMetricsToFile} from './i18NMetrics2.js';
+import {checkI18N,writeI18NMetricsToFile} from './i18NMetrics.js';
+import {getDesignHygieneMetrics,writeDesignMetricsToFile} from './designHygieneMetrics.js';
 
 export let userActionCount = 0;
 //const runA11y = process.env.RUN_A11Y?.toLowerCase() === 'true' || false;
@@ -19,7 +21,7 @@ export let userActionCount = 0;
  * @param {Page} page - Playwright Page object
  * @param {Function} fn - Async step actions
  */
-export async function qumAction(description, page, fn) {
+export async function qumAction(description, step='step',page, fn) {
   const info = test.info();
 
   if (!page || typeof page.evaluate !== 'function') {
@@ -27,7 +29,8 @@ export async function qumAction(description, page, fn) {
   }
 
   console.log(`\n--- Start of Action ---`);
-  const [task, scenario, step] = info.titlePath;
+  console.log(`tittle path ${info.titlePath}`);
+  const [file, task, scenario] = info.titlePath;
   const taskName = formatTaskName(task);
 
   console.log(`Task: ${taskName}`);
@@ -45,6 +48,7 @@ export async function qumAction(description, page, fn) {
   const runPerformance = info.project.metadata.performance?.toLowerCase() === 'true' || false;
   const runBrowserMetrics = info.project.metadata.browserMetrics?.toLowerCase() === 'true' || false;
   const runI18n = info.project.metadata.i18n?.toLowerCase() === 'true' || false;
+  const runDesign = info.project.metadata.designHygiene?.toLowerCase() === 'true' || false;
 
   console.log(`A11y=${runA11y}; performance=${runPerformance}; browserMetrics=${runBrowserMetrics};i18n=${runI18n}`);
   if (runPerformance) {
@@ -63,6 +67,10 @@ export async function qumAction(description, page, fn) {
     {
       await checkI18N(page,description,taskName,scenario,step);
     }
+    if(runDesign)
+      {
+        await  getDesignHygieneMetrics(page,description,taskName,scenario,step);
+      }
   console.log(`--- END of Action ${description} ---\n`);
   //await page.waitForTimeout(6000);
 }
@@ -87,23 +95,27 @@ export function writeQUM(testInfo) {
   const runPerformance = testInfo.project.metadata.performance?.toLowerCase() === 'true' || false;
   const runBrowserMetrics = testInfo.project.metadata.browserMetrics?.toLowerCase() === 'true' || false;
   const runI18N = testInfo.project.metadata.i18n?.toLowerCase() === 'true' || false;
+  const runDesign = testInfo.project.metadata.designHygiene?.toLowerCase() === 'true' || false;
   
   console.log(`In writeQUM a11y=${testInfo.project.metadata.a11y} ,
      performance Metrics=${testInfo.project.metadata.performance}
      browser Metrics=${testInfo.project.metadata.browserMetrics}
-     i18n Metrics= ${testInfo.project.metadata.i18n}`);
-  return runA11y || runPerformance || runBrowserMetrics||runI18N;
+     i18n Metrics= ${testInfo.project.metadata.i18n}
+     designHygiene Metrics=${runDesign}`);
+  return runA11y || runPerformance || runBrowserMetrics||runI18N||runDesign;
 }
 
 export function writeQUMFiles(testInfo) {
   if (writeQUM(testInfo)) {
     try {
-      const fileName = testInfo.file.split('/').pop().replace('.spec.js', '');
+      //const fileName = testInfo.file.split('/').pop().replace('.spec.js', '');
+      const fileName =path.basename(testInfo.file).replace('.spec.js', '');
       const filePath = testInfo.project.metadata.screenshotDir;
       writePerformanceMetricsToFile(fileName, filePath);
       writeA11yMetricsToFile(fileName, filePath);
       writeBrowserMetricsToFile(fileName, filePath);
       writeI18NMetricsToFile(fileName,filePath);
+      writeDesignMetricsToFile(fileName,filePath);
       console.log('✅ Metrics written successfully');
     } catch (err) {
       console.error('⚠️ Failed to write metrics:', err);

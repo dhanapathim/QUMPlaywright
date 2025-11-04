@@ -51,15 +51,21 @@ export default defineConfig({
       metadata: { browserMetrics: 'true', screenshotDir },
     },
      
-    // {
-    //   name: 'i18n=true',
-    //   use: {screenshot: 'only-on-failure',trace: 'retain-on-failure' },
-    //   metadata: { i18n: 'true', screenshotDir },
-    // },
+    {
+      name: 'i18n=true',
+      use: {screenshot: 'only-on-failure',trace: 'retain-on-failure' },
+      metadata: { i18n: 'true', screenshotDir },
+    },
+    
+    {
+      name: 'designHygiene=true',
+      use: { screenshot: 'only-on-failure', trace: 'retain-on-failure' },
+      metadata: { designHygiene: 'true', screenshotDir },
+    },
     // {
     //   name: 'sequential',
     //   use: {screenshot: 'only-on-failure',trace: 'retain-on-failure' },
-    //   metadata: { browserMetrics: 'true', a11y: 'true', performance: 'true', screenshotDir },
+    //   metadata: { browserMetrics: 'true', a11y: 'true', performance: 'true', screenshotDir,designHygiene:'true' },
     // },
   ],
   globalSetup: './utils/global-setup.js'

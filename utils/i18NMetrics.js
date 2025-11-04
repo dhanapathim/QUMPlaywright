@@ -1,6 +1,7 @@
 import fs from 'fs';
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import path from 'path';
+import { franc } from 'franc';
 
 const targetLang = process.env.TARGET_LANG;
 const supportLangs = process.env.supportLangs ? process.env.supportLangs.split(',').map(l => l.trim()).filter(Boolean) : [];
@@ -22,9 +23,11 @@ async function checkI18N(page, action, task, scenario, step) {
     //console.log("expectedData=",extractedData);
     //if(expectedData.length)
     //const chunks = getChunks(expectedData, 50);
-    let i18nList = [];
+    //let i18nList = [];
     const entries = Object.entries(extractedData);
-    const chunks = [];
+    console.log("extraceed Eelement:",entries.length);
+    console.log("ex data:",entries[0]);
+   /* const chunks = [];
     for (let i = 0; i < entries.length; i += 50) {
         const sliced = Object.fromEntries(entries.slice(i, i + 50));
         chunks.push(sliced);
@@ -37,15 +40,20 @@ async function checkI18N(page, action, task, scenario, step) {
             i18nList.push(mismatchWords);
         }
         console.log("i18NData list=",i18nList.length);
-    }
+    }*/
 
-    if (i18nList.length > 0) {
+   const mism=misMFranc(extractedData);
+   const i18nList=mism.mismatchResults;
+   const wordCount=mism.wordCount;
+
+    if (i18nList!= null) {
         i18nData.push({
             task,
             scenario,
             step,
             action,
             //accessibilityViolations: a11yViolations.length,
+            misMatchWordsCount: wordCount,
             misMatchWords: i18nList
         });
     }
@@ -141,7 +149,7 @@ export function writeI18NMetricsToFile(fileName = 'i18nMetrics', filePath) {
         }
         console.log(i18nData.length + ' total steps recorded so far.');
         fs.writeFileSync(METRICS_FILE, JSON.stringify(i18nData, null, 2), 'utf-8');
-        console.log(`✅ A11y metrics written to ${METRICS_FILE}`);
+        console.log(`✅ i18n metrics written to ${METRICS_FILE}`);
     }
 }
 async function getMisMatchedWords(data) {
@@ -219,6 +227,42 @@ ${JSON.stringify(data, null, 2)}
         console.error("error occured while get the mismatch the words: ");
     }
     return null;
+}
+
+function misMFranc(extractedData)
+{
+    console.log("Inside misMfranc");
+    const targetLang = 'eng'; // ISO 639-3 for Italian
+    const mismatchResults = {};
+    let wordCount=0;
+    for (const [xpath, attrs] of Object.entries(extractedData)) {
+      const elementMismatches = {};
+  
+      for (const [key, text] of Object.entries(attrs)) {
+        if (!text) continue;
+  
+        const words = text.split(/\s+/).filter(w => w.length > 1);
+        const nonItalianWords = [];
+  
+        for (const word of words) {
+          const detectedLang = franc(word, { minLength: 2 });
+          if (detectedLang !== targetLang) {
+            nonItalianWords.push(word);
+            wordCount++;
+          }
+        }
+  
+        if (nonItalianWords.length > 0) {
+          elementMismatches[key] = nonItalianWords;
+        }
+      }
+  
+      if (Object.keys(elementMismatches).length > 0) {
+        mismatchResults[xpath] = elementMismatches;
+      }
+    }
+    console.log("word count:",wordCount);
+    return {mismatchResults,wordCount};
 }
 
 async function autoScroll(page, step = 800, delay = 500) {

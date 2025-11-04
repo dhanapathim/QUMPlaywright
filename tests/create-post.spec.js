@@ -18,7 +18,7 @@ test.describe('Instagram', () => {
     });
 
     // Assert title
-    await qumValidation('Validate url post page load.', false,page, async () => {
+    await qumValidation('Validate url post page load.','', false,page, async () => {
       await expect(page).toHaveTitle('Brandwatch');
     });
 
@@ -72,9 +72,9 @@ test.describe('Instagram', () => {
 
     // Final validation
     // await expect(newTab).toHaveTitle('Social Media Management');
-    await qumValidation('Validate url post page load.', true,page, async () => {
+    await qumValidation('Validate url post page load.','', true,page, async () => {
       await expect(newTab).toHaveTitle('Social Media Management')
     });
   });
-
+ 
 });

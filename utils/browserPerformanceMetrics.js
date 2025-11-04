@@ -21,7 +21,6 @@ async function getBrowserMetrics(page, action, task, scenario, step) {
         if (currentURL === lastURL && prevNavStart === presentNavigation) { return { metrics: {}, presentNavigation }; }
 
         const metrics = {
-            startTime: performance.timeOrigin,
             ttfb: perf.responseStart - perf.requestStart, // Time to First Byte
             ttlb: perf.responseEnd - perf.requestStart,   // Time to Last Byte
             domInteractive: perf.domInteractive,

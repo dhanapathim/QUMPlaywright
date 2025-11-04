@@ -21,6 +21,7 @@
     "@google/generative-ai": "^0.24.1",
     "@langchain/google-genai": "^1.0.0",
     "eld": "^1.0.1",
+    "extract-zip": "^2.0.1",
     "franc": "^6.2.0",
     "fs": "^0.0.1-security",
     "langchain": "^1.0.1",
