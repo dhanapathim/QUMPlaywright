@@ -6,8 +6,8 @@ import { franc } from 'franc';
 const targetLang = process.env.TARGET_LANG;
 const supportLangs = process.env.supportLangs ? process.env.supportLangs.split(',').map(l => l.trim()).filter(Boolean) : [];
 
-const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
-const I18N_MODEL = process.env.I18N_MODEL;
+const GOOGLE_API_KEY = process.env.GEN_AI_API_KEY;
+const I18N_MODEL = process.env.GEN_AI_MODEL;
 const i18nData = [];
 
 const llm = new ChatGoogleGenerativeAI({
