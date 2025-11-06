@@ -38,7 +38,6 @@ export async function qumValidation(description, step,isLastAction, page, fn) {
     }
   });
   const runPerformance = info.project.metadata.performance?.toLowerCase() === 'true' || false;
-  console.log("runperformce:",runPerformance);
   if (isLastAction && runPerformance) {
     const endUserAction = Date.now();
     const userActionTime = endUserAction - startUserAction;

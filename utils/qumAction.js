@@ -50,9 +50,7 @@ export async function qumAction(description, step = 'step', page, fn) {
     await getPerformanceMetrics(page, taskName, scenario, step, description, userStart, requestSent);
   }
   userActionCount++;
-  //await page.waitForTimeout(3000);
   if (runA11y) {
-    //await page.waitForTimeout(3000);
     checkAllyViolations(page, description, taskName, scenario, step);
   }
   if (runBrowserMetrics) {
