@@ -8,7 +8,7 @@ const screenshotDir = path.join(process.cwd(), 'qum', exe_Time);
  * @see https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({
-  timeout: 1 * 60 * 1000,
+  timeout: 2 * 60 * 1000,
   testDir: './tests',
   /* Run tests in files in parallel */
   fullyParallel: false,
@@ -38,37 +38,37 @@ export default defineConfig({
       use: {
         screenshot: 'only-on-failure', trace: 'retain-on-failure',
       },
-      metadata: { performance: 'true', screenshotDir },
+      metadata: { performance: 'true', screenshotDir, persona: 'Admin' },
     },
 
-    // {
-    //   name: 'a11y=true',
-    //   use: {screenshot: 'only-on-failure',trace: 'retain-on-failure' },
-    //   metadata: { a11y: 'true', screenshotDir },
-    // },
+    {
+      name: 'a11y=true',
+      use: {screenshot: 'only-on-failure',trace: 'retain-on-failure' },
+      metadata: { a11y: 'true', screenshotDir, persona:'Admin' },
+    },
 
     {
       name: 'browserMetrics=true',
       use: { screenshot: 'only-on-failure', trace: 'retain-on-failure' },
-      metadata: { browserMetrics: 'true', screenshotDir },
+      metadata: { browserMetrics: 'true', screenshotDir , persona:'Admin'},
     },
-     
-    // {
-    //   name: 'i18n=true',
-    //   use: {screenshot: 'only-on-failure',trace: 'retain-on-failure' },
-    //   metadata: { i18n: 'true', screenshotDir },
-    // },
-    
+
+    {
+      name: 'i18n=true',
+      use: {screenshot: 'only-on-failure',trace: 'retain-on-failure' },
+      metadata: { i18n: 'true', screenshotDir, persona:'Admin' },
+    },
+
     {
       name: 'designHygiene=true',
       use: { screenshot: 'only-on-failure', trace: 'retain-on-failure' },
-      metadata: { designHygiene: 'true', screenshotDir },
+      metadata: { designHygiene: 'true', screenshotDir, persona:'Admin' },
     },
 
     // {
     //   name: 'sequential',
     //   use: {screenshot: 'only-on-failure',trace: 'retain-on-failure' },
-    //   metadata: { browserMetrics: 'true', a11y: 'true', performance: 'true', screenshotDir, designHygiene:'true' },
+    //   metadata: { browserMetrics: 'true', a11y: 'true', performance: 'true', screenshotDir, designHygiene:'true', persona:'Admin' },
     // },
   ],
   globalSetup: './utils/global-setup.js'

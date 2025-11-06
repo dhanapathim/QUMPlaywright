@@ -3,6 +3,8 @@ import fs from 'fs';
 import path from 'path';
 
 const allyData = [];
+export const performanceData = {};
+
 export function checkAllyViolations(page, action, task, scenario, step) {
   console.log(`\n--- Accessibility Check ---`);
   if (page.isClosed()) {
@@ -54,7 +56,7 @@ export function checkAllyViolations(page, action, task, scenario, step) {
   })();
 }
 
-export function writeA11yMetricsToFile(fileName = 'allyMetrics', filePath) {
+export function writeA11yMetricsToFile(fileName = 'allyMetrics', filePath, persona) {
   if (allyData.length > 0) {
     fileName = fileName + ".json"
     const METRICS_FILE = path.join(filePath, "ally", fileName);
@@ -63,8 +65,12 @@ export function writeA11yMetricsToFile(fileName = 'allyMetrics', filePath) {
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
+    Object.assign(performanceData, {
+      persona: persona,
+      results: allyData
+    });
     console.log(allyData.length + ' total steps recorded so far.');
-    fs.writeFileSync(METRICS_FILE, JSON.stringify(allyData, null, 2), 'utf-8');
+    fs.writeFileSync(METRICS_FILE, JSON.stringify(performanceData, null, 2), 'utf-8');
     console.log(`✅ A11y metrics written to ${METRICS_FILE}`);
   }
 }

@@ -5,12 +5,13 @@ import { userActionCount } from '../utils/qumAction.js';
 
 // Global array to hold all step metrics
 export const stepMetrics = [];
+export const performanceData = {};
 
 /**
  * Add a single step metric (does not write to disk yet)
  */
 function addStepMetric({ task, scenario, step, action, userActionTime, systemDelay,
-  totalTime, networkCalls, isValid,type }) {
+  totalTime, networkCalls, isValid, type }) {
   stepMetrics.push({
     task,
     scenario,
@@ -28,10 +29,13 @@ function addStepMetric({ task, scenario, step, action, userActionTime, systemDel
   console.log(stepMetrics.length + ' total steps recorded so far.');
 }
 
-export function addOutCome(userActions, outCome) {
-  stepMetrics.push({
+export function addOutCome(userActions, outCome, persona) {
+  Object.assign(performanceData, {
+    persona: persona,
     userActions,
-    outCome
+    outCome,
+    results: stepMetrics
+
   });
 }
 /**
@@ -85,20 +89,20 @@ async function getPerformanceMetrics(page, taskName, scenario, step, description
     totalTime,
     networkCalls: perfEntries,
     isValid: true,
-    type:'user Action',
+    type: 'user Action',
   });
 
 }
 /**
  * Write all collected metrics once at the end
  */
-function writePerformanceMetricsToFile(fileName = 'performanceMetrics', commonDir) {
+function writePerformanceMetricsToFile(fileName = 'performanceMetrics', commonDir, persona) {
   if (stepMetrics.length > 0) {
     let outCome = "Not Completed";
     if (isValid) {
       outCome = "Completed";
     }
-    addOutCome(userActionCount, outCome);
+    addOutCome(userActionCount, outCome, persona);
     fileName = fileName + ".json"
     const METRICS_FILE = path.join(commonDir, "performance", fileName);
 
@@ -108,7 +112,7 @@ function writePerformanceMetricsToFile(fileName = 'performanceMetrics', commonDi
       fs.mkdirSync(dir, { recursive: true });
     }
     console.log(stepMetrics.length + ' total steps recorded so far.');
-    fs.writeFileSync(METRICS_FILE, JSON.stringify(stepMetrics, null, 2), 'utf-8');
+    fs.writeFileSync(METRICS_FILE, JSON.stringify(performanceData, null, 2), 'utf-8');
     console.log(`✅ All metrics written to ${METRICS_FILE}`);
   }
 }

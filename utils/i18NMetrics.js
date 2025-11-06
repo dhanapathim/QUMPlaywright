@@ -6,6 +6,7 @@ const targetLang = process.env.TARGET_LANG;
 //const supportLangs = process.env.supportLangs ? process.env.supportLangs.split(',').map(l => l.trim()).filter(Boolean) : [];
 
 const i18nData = [];
+export const performanceData = {};
 
 async function checkI18N(page, action, task, scenario, step) {
     console.log(`\n--- i18N Check ---`);
@@ -99,7 +100,7 @@ async function getDomElementsWithData(page) {
     return extractedData;
 }
 
-export function writeI18NMetricsToFile(fileName = 'i18nMetrics', filePath) {
+export function writeI18NMetricsToFile(fileName = 'i18nMetrics', filePath, persona) {
     console.log("Inside i18n write");
     if (i18nData.length > 0) {
         fileName = fileName + ".json"
@@ -109,8 +110,14 @@ export function writeI18NMetricsToFile(fileName = 'i18nMetrics', filePath) {
         if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir, { recursive: true });
         }
+
+        Object.assign(performanceData, {
+            persona: persona,
+            results: i18nData
+        });
+
         console.log(i18nData.length + ' total steps recorded so far.');
-        fs.writeFileSync(METRICS_FILE, JSON.stringify(i18nData, null, 2), 'utf-8');
+        fs.writeFileSync(METRICS_FILE, JSON.stringify(performanceData, null, 2), 'utf-8');
         console.log(`✅ i18n metrics written to ${METRICS_FILE}`);
     }
 }

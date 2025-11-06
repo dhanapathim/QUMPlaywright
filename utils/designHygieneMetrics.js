@@ -2,6 +2,8 @@ import fs from 'fs';
 import path from 'path';
 
 const designData = [];
+export const performanceData = {};
+
 export async function getDesignHygieneMetrics(page, action, task, scenario, step) {
   console.log(`\n--- Design Hygiene Check ---`);
   if (page.isClosed()) {
@@ -59,7 +61,7 @@ export async function getDesignHygieneMetrics(page, action, task, scenario, step
     return summary;
   }, properties);
 
-  if (results!=null) {
+  if (results != null) {
     //const data= JSON.stringify(results, null, 2);
     designData.push({
       task,
@@ -68,20 +70,25 @@ export async function getDesignHygieneMetrics(page, action, task, scenario, step
       action,
       checkDesignHygiene: results
     });
-}
+  }
 
 }
 /** Write to file */
-export function writeDesignMetricsToFile(fileName = 'designHygiene', filePath) {
-    if (designData.length === 0) {
-      console.log("ℹ️ No design hygiene data to write.");
-      return;
-    }
-  
-    const dir = path.join(filePath, "designHygiene");
-    fs.mkdirSync(dir, { recursive: true });
-  
-    const file = path.join(dir, `${fileName}.json`);
-    fs.writeFileSync(file, JSON.stringify(designData, null, 2), 'utf-8');
-    console.log(`✅ design hygiene metrics written to ${file}`);
+export function writeDesignMetricsToFile(fileName = 'designHygiene', filePath, persona) {
+  if (designData.length === 0) {
+    console.log("ℹ️ No design hygiene data to write.");
+    return;
   }
+
+  const dir = path.join(filePath, "designHygiene");
+  fs.mkdirSync(dir, { recursive: true });
+
+  Object.assign(performanceData, {
+    persona: persona,
+    results: designData
+  });
+
+  const file = path.join(dir, `${fileName}.json`);
+  fs.writeFileSync(file, JSON.stringify(performanceData, null, 2), 'utf-8');
+  console.log(`✅ design hygiene metrics written to ${file}`);
+}

@@ -25,6 +25,7 @@ if (GOOGLE_API_KEY) {
 }
 
 const i18nData = [];
+export const performanceData = {};
 const langCache = new Map(); // 🧠 Cache repeated strings
 
 /** Main entry */
@@ -59,8 +60,8 @@ export async function checkI18N(page, action, task, scenario, step) {
     }
   }
 
-  if (i18nList.length > 0) {     
-    const totalMismatchedCount=getCount(i18nList);
+  if (i18nList.length > 0) {
+    const totalMismatchedCount = getCount(i18nList);
     i18nData.push({
       task,
       scenario,
@@ -213,13 +214,18 @@ export function writeI18NMetricsToFile(fileName = 'i18nMetrics', filePath) {
   const dir = path.join(filePath, "i18n");
   fs.mkdirSync(dir, { recursive: true });
 
+  Object.assign(performanceData, {
+    persona: persona,
+    results: i18nData
+  });
+
   const file = path.join(dir, `${fileName}.json`);
-  fs.writeFileSync(file, JSON.stringify(i18nData, null, 2), 'utf-8');
+  fs.writeFileSync(file, JSON.stringify(performanceData, null, 2), 'utf-8');
   console.log(`✅ i18n metrics written to ${file}`);
 }
-function getCount(i18nList){
-// Ensure everything is parsed JSON objects
-const parsedList = i18nList.flatMap(item => {
+function getCount(i18nList) {
+  // Ensure everything is parsed JSON objects
+  const parsedList = i18nList.flatMap(item => {
     if (typeof item === "string") {
       try {
         return JSON.parse(item);
@@ -239,7 +245,7 @@ const parsedList = i18nList.flatMap(item => {
     }
     return total;
   }, 0);
-  
+
   console.log("Total mismatched words:", totalMismatchedCount);
-    return totalMismatchedCount;
+  return totalMismatchedCount;
 }

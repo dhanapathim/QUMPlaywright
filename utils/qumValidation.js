@@ -10,7 +10,7 @@ export let isValid = false;
  * @param {Page} page - Playwright Page object
  * @param {Function} fn - Async step actions
  */
-export async function qumValidation(description, step,isLastAction, page, fn) {
+export async function qumValidation(description, step, isLastAction, page, fn) {
   const info = test.info();
   isValid = false;
   if (!page || typeof page.evaluate !== 'function') {
@@ -18,7 +18,7 @@ export async function qumValidation(description, step,isLastAction, page, fn) {
   }
 
   console.log(`\n--- Start of Action ---`);
-  const [file,task, scenario] = info.titlePath;
+  const [file, task, scenario] = info.titlePath;
   const taskName = formatTaskName(task);
 
   console.log(`Task: ${taskName}`);
@@ -51,10 +51,10 @@ export async function qumValidation(description, step,isLastAction, page, fn) {
       systemDelay: 0,
       networkCalls: [],
       isValid: isValid,
-      type:'validation',
+      type: 'validation',
     });
   }
-  else {isValid=false;}
+  else { isValid = false; }
   console.log(`--- END of Action ${description} ---\n`);
 }
 

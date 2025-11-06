@@ -101,11 +101,12 @@ export function writeQUMFiles(testInfo) {
     try {
       const fileName = path.basename(testInfo.file).replace('.spec.js', '');
       const filePath = testInfo.project.metadata.screenshotDir;
-      writePerformanceMetricsToFile(fileName, filePath);
-      writeA11yMetricsToFile(fileName, filePath);
-      writeBrowserMetricsToFile(fileName, filePath);
-      writeI18NMetricsToFile(fileName, filePath);
-      writeDesignMetricsToFile(fileName, filePath);
+      const persona = testInfo.project.metadata?.persona ?? 'user';
+      writePerformanceMetricsToFile(fileName, filePath, persona);
+      writeA11yMetricsToFile(fileName, filePath, persona);
+      writeBrowserMetricsToFile(fileName, filePath, persona);
+      writeI18NMetricsToFile(fileName, filePath, persona);
+      writeDesignMetricsToFile(fileName, filePath, persona);
       console.log('✅ Metrics written successfully');
     } catch (err) {
       console.error('⚠️ Failed to write metrics:', err);
