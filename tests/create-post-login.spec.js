@@ -87,10 +87,12 @@ test.describe('Create a Post', () => {
       await newTab.waitForLoadState('domcontentloaded');
       const element = newTab.locator("//*[@id='onetrust-accept-btn-handler']");
       await element.waitFor({ state: 'visible' });
+
       // 2. Accept Cookies
       await qumAction('Accept cookies', stepName, newTab, async () => {
         await newTab.locator("//*[@id='onetrust-accept-btn-handler']").click();
       });
+
       // 3. Click on add post
       await qumAction('Click on add post', stepName, newTab, async () => {
         await newTab.locator(`xpath=/html/body/falcon-new-app/prisma-shell/div/home-feature-homescreen/main/div/section[2]/div[1]/home-feature-publications/div/div/a[1]/span`).click();
@@ -108,6 +110,7 @@ test.describe('Create a Post', () => {
         await newTab.locator("//*[contains(@id, 'fang-card-content')]/publish-channel-selector/fang-select-list/div[2]/div[2]/fang-select-list-option[1]/div/fang-input-box/div/label").click();
         await newTab.waitForLoadState('domcontentloaded');
       });
+
       // 6. click on create button
       await qumAction('click on create button ', stepName, newTab, async () => {
         await newTab.locator(`xpath=/html/body/falcon-new-app/prisma-shell/div/falcon-app/ui-view/ui-view/prisma-app-outlet/div/ui-view/publish-app/publish-network-channel-selector/main/publish-side-menu/fang-card/fang-card-footer/button`).click();
@@ -125,6 +128,7 @@ test.describe('Create a Post', () => {
       await qumAction('add  text', stepName, newTab, async () => {
         await newTab.locator("//*[contains(@id, 'fang-card-content')]/fang-tabs/div[2]/publish-instagram-post-form/form/publish-form-field[1]/div/publish-rich-textfield/gpt-suggestion-popover-spawn-point/div/fang-text-field/div/div[1]/fang-text-field-editable/div/div[1]").fill(" Sample test");
       });
+
       // 2. focus
       await qumAction('mouse over ', stepName, newTab, async () => {
         await newTab.locator(`//*[contains(@id, 'fang-card-content')]/fang-tabs/div[2]
@@ -132,6 +136,7 @@ test.describe('Create a Post', () => {
        publish-editor-post-attachments/fang-file-uploader`).hover();
       });
       //await page.screenshot({ path: './screenshots/signin-clicked.png' });
+
       // 3. click on upload
       await qumAction('click on upload link', stepName, newTab, async () => {
         await newTab.locator("//*[contains(@id, 'fang-card-content')]/fang-tabs/div[2]/publish-instagram-post-form/form/publish-form-field[2]/div/publish-editor-post-attachments/fang-file-uploader/label/div[3]/div/div[2]/span[1]/button").click();
@@ -149,14 +154,14 @@ test.describe('Create a Post', () => {
         await newTab.waitForLoadState('domcontentloaded');
       });
 
-      // 6. click on lable
-      await qumAction('click on the lable', stepName, newTab, async () => {
+      // 6. click on label
+      await qumAction('click on the label', stepName, newTab, async () => {
         await newTab.locator(`xpath=(//input[@placeholder='Add labels...'])[1]`).click();
         await newTab.waitForLoadState('domcontentloaded');
       });
 
-      // 7. Type lable value
-      await qumAction('Type the lable value', stepName, newTab, async () => {
+      // 7. Type label value
+      await qumAction('Type the label value', stepName, newTab, async () => {
         await newTab.locator(`xpath=(//input[@placeholder='Add labels...'])[1]`).fill("cars");
         await newTab.waitForLoadState('domcontentloaded');
       });
@@ -173,7 +178,6 @@ test.describe('Create a Post', () => {
       });
 
     });
-    //await context.close();
   });
 
   test('facebook flow', async ({ page, context, baseURL }) => {
@@ -253,16 +257,17 @@ test.describe('Create a Post', () => {
       await newTab.waitForLoadState('domcontentloaded');
       const element = newTab.locator("//*[@id='onetrust-accept-btn-handler']");
       await element.waitFor({ state: 'visible' });
+
       // 2. Accept Cookies
       await qumAction('Accept cookies', stepName, newTab, async () => {
         await newTab.locator("//*[@id='onetrust-accept-btn-handler']").click();
       });
+
       // 3. Click on add post
       await qumAction('Click on add post', stepName, newTab, async () => {
         await newTab.locator(`xpath=/html/body/falcon-new-app/prisma-shell/div/home-feature-homescreen/main/div/section[2]/div[1]/home-feature-publications/div/div/a[1]/span`).click();
         //await page.screenshot({ path: './screenshots/signin-clicked.png' });
       });
-
 
       // 4. select instagram
       await qumAction('select instagram', stepName, newTab, async () => {
@@ -275,6 +280,7 @@ test.describe('Create a Post', () => {
         await newTab.locator("//*[contains(@id, 'fang-card-content')]/publish-channel-selector/fang-select-list/div[2]/div[2]/fang-select-list-option[1]/div/fang-input-box/div/label").click();
         await newTab.waitForLoadState('domcontentloaded');
       });
+
       // 6. click on create button
       await qumAction('click on create button ', stepName, newTab, async () => {
         await newTab.locator(`xpath=/html/body/falcon-new-app/prisma-shell/div/falcon-app/ui-view/ui-view/prisma-app-outlet/div/ui-view/publish-app/publish-network-channel-selector/main/publish-side-menu/fang-card/fang-card-footer/button`).click();
@@ -292,6 +298,7 @@ test.describe('Create a Post', () => {
       await qumAction('add  text', stepName, newTab, async () => {
         await newTab.locator("//*[contains(@id, 'fang-card-content')]/fang-tabs/div[2]/publish-instagram-post-form/form/publish-form-field[1]/div/publish-rich-textfield/gpt-suggestion-popover-spawn-point/div/fang-text-field/div/div[1]/fang-text-field-editable/div/div[1]").fill(" Sample test");
       });
+
       // 2. focus
       await qumAction('mouse over ', stepName, newTab, async () => {
         await newTab.locator(`//*[contains(@id, 'fang-card-content')]/fang-tabs/div[2]
@@ -299,6 +306,7 @@ test.describe('Create a Post', () => {
      publish-editor-post-attachments/fang-file-uploader`).hover();
       });
       //await page.screenshot({ path: './screenshots/signin-clicked.png' });
+
       // 3. click on upload
       await qumAction('click on upload link', stepName, newTab, async () => {
         await newTab.locator("//*[contains(@id, 'fang-card-content')]/fang-tabs/div[2]/publish-instagram-post-form/form/publish-form-field[2]/div/publish-editor-post-attachments/fang-file-uploader/label/div[3]/div/div[2]/span[1]/button").click();
@@ -316,14 +324,14 @@ test.describe('Create a Post', () => {
         await newTab.waitForLoadState('domcontentloaded');
       });
 
-      // 6. click on lable
-      await qumAction('click on the lable', stepName, newTab, async () => {
+      // 6. click on label
+      await qumAction('click on the label', stepName, newTab, async () => {
         await newTab.locator(`xpath=(//input[@placeholder='Add labels...'])[1]`).click();
         await newTab.waitForLoadState('domcontentloaded');
       });
 
-      // 7. Type lable value
-      await qumAction('Type the lable value', stepName, newTab, async () => {
+      // 7. Type label value
+      await qumAction('Type the label value', stepName, newTab, async () => {
         await newTab.locator(`xpath=(//input[@placeholder='Add labels...'])[1]`).fill("cars");
         await newTab.waitForLoadState('domcontentloaded');
       });
