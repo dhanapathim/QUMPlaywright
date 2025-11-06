@@ -20,7 +20,7 @@ if (GOOGLE_API_KEY) {
   });
 } else {
   console.warn(
-    "[WARN] Google Generative AI not initialized — missing GOOGLE_API_KEY or I18N_MODEL."
+    "[WARN] Google Generative AI not initialized — missing GEN_AI_API_KEY or GEN_AI_MODEL."
   );
 }
 
