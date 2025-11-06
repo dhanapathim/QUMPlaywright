@@ -10,13 +10,19 @@ const supportLangs = (process.env.supportLangs || "")
   .map(l => l.trim())
   .filter(Boolean);
 
-const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
-const I18N_MODEL = process.env.I18N_MODEL || "gemini-1.5-flash";
+const GOOGLE_API_KEY = process.env.GEN_AI_API_KEY;
+const I18N_MODEL = process.env.GEN_AI_MODEL || "gemini-1.5-flash";
 
-const llm = new ChatGoogleGenerativeAI({
-  apiKey: GOOGLE_API_KEY,
-  model: I18N_MODEL,
-});
+if (GOOGLE_API_KEY) {
+  llm = new ChatGoogleGenerativeAI({
+    apiKey: GOOGLE_API_KEY,
+    model: I18N_MODEL,
+  });
+} else {
+  console.warn(
+    "[WARN] Google Generative AI not initialized — missing GOOGLE_API_KEY or I18N_MODEL."
+  );
+}
 
 const i18nData = [];
 const langCache = new Map(); // 🧠 Cache repeated strings
@@ -127,15 +133,6 @@ async function getDomElementsWithData(page) {
     traverse(document.body);
     return results;
   });
-
-  // 🧹 Filter irrelevant / short text
- /* for (const [path, obj] of Object.entries(extractedData)) {
-    for (const key in obj) {
-      const val = obj[key];
-      if (!val || val.trim().length < 3 || /^\W+$/.test(val)) delete obj[key];
-    }
-    if (Object.keys(obj).length === 0) delete extractedData[path];
-  }*/
 
   console.log(`✅ Extracted ${Object.keys(extractedData).length} elements.`);
   return extractedData;
