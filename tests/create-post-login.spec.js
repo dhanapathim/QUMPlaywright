@@ -97,13 +97,11 @@ test.describe('Create a Post', () => {
         //await page.screenshot({ path: './screenshots/signin-clicked.png' });
       });
 
-
       // 4. select instagram
       await qumAction('select instagram', stepName, newTab, async () => {
         await newTab.locator("//*[contains(@id, 'fang-card-content')]/publish-network-selector/fang-toggle-select/fang-toggle-select-option[4]/label/fang-badge").click();
         //await ssmLocator.click();
       });
-
 
       // 5. select fang-out
       await qumAction('selct fang out', stepName, newTab, async () => {
