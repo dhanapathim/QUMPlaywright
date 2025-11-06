@@ -9,10 +9,12 @@ const supportLangs = process.env.supportLangs ? process.env.supportLangs.split('
 const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
 const I18N_MODEL = process.env.I18N_MODEL;
 const i18nData = [];
+
 const llm = new ChatGoogleGenerativeAI({
     apiKey: GOOGLE_API_KEY,
     model: I18N_MODEL,
 });
+
 async function checkI18N(page, action, task, scenario, step) {
     console.log(`\n--- i18N Check ---`);
     if (page.isClosed()) {
@@ -57,7 +59,6 @@ async function checkI18N(page, action, task, scenario, step) {
             misMatchWords: i18nList
         });
     }
-
 }
 
 async function getDomElementsWithData(page) {
