@@ -10,10 +10,16 @@ const GOOGLE_API_KEY = process.env.GEN_AI_API_KEY;
 const I18N_MODEL = process.env.GEN_AI_MODEL;
 const i18nData = [];
 
-const llm = new ChatGoogleGenerativeAI({
-    apiKey: GOOGLE_API_KEY,
-    model: I18N_MODEL,
-});
+if (process.env.GOOGLE_API_KEY && process.env.I18N_MODEL) {
+  llm = new ChatGoogleGenerativeAI({
+    apiKey: process.env.GOOGLE_API_KEY,
+    model: process.env.I18N_MODEL,
+  });
+} else {
+  console.warn(
+    "[WARN] Google Generative AI not initialized — missing GOOGLE_API_KEY or I18N_MODEL."
+  );
+}
 
 async function checkI18N(page, action, task, scenario, step) {
     console.log(`\n--- i18N Check ---`);
